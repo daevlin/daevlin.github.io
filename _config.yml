@@ -1,4 +1,5 @@
-theme: jekyll-theme-minimal
+#theme: jekyll-theme-minimal
+theme: minima
 title: daevlin
 description: Malware, meet Mr Stick and Mr Poke
 logo: daevlin.png
