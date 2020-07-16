@@ -176,7 +176,7 @@ LoadResource
 PE: compiler: Microsoft Visual C/C++(-)[-]
 PE: linker: Microsoft Linker(14.25)[EXE32,console]</p>
 <p>Looking at the file in "Resource Hacker". There is a RT_RCDATA resource with ID 101. The .rsrc is kind of big, 86 KB to be exact and seems to contains random bytes, which may indicate it's packed or encrypted/obfuscated.</p>
-<p><img src="resource_hacker.png" alt="Resource Hacker"></p>
+<p><img src="/images/resource_hacker.png" alt="Resource Hacker"></p>
 <p>The .rsrc section also has quite a high entry, as shown by the diagram in DiE.</p>
 <p><img src="entropy_rsrc.png" alt="Detect It Easy"></p>
 <p>Let's do some analysis of the suspicous binary in Cutter. What immediatly peaks my interest is what looks like a lookup table in the Strings pane in Cutter. "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890./="</p>
