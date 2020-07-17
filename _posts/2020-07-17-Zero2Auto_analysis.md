@@ -814,4 +814,4 @@ Functionality for the final payload is to display a Messagebox
 
 [CruLoader_Unpacker_Downloader](cruloader_unpacker_downloader.py)
 
-¡[Test](/assets/calls_to_decrypt.png)
+![Test](/assets/calls_to_decrypt.png)
