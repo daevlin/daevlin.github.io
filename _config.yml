@@ -53,8 +53,8 @@ minima:
 # - about.md
 
 # Build settings
-theme: minima:
-         skin: dark
+theme: minima
+#skin: dark
             
 
 plugins:
