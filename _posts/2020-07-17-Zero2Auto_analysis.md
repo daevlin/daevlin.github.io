@@ -477,7 +477,7 @@ After the .rsrc has been decrypted, it goes back to resoöving some more encrypt
 
 It then calls this API to spawn a suspended copy of itself. This is starting to look like it will write the unpacked payload to a new child process.
 
-![Spawn_child](spawned_child.png)
+![Spawn_child](/assets/images/spawned_child.png)
 
 **Cruloaders second layer**
 
