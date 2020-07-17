@@ -2,7 +2,7 @@
 name: daevlin
 title: Malware, meet Mr Stick and Mr Poke
 description: Hobby malware analyst. We can call it jobbie.
-avatar: https://github.com/daevlin/daevlin.github.io/blob/master/daevlin.png
+avatar: https://avatars2.githubusercontent.com/u/55744916?s=400&u=e76ef55c2de39dd020a474157d20633c9e856d16&v=4
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: daevlin
@@ -10,8 +10,8 @@ twitter_username: daevlin
 
 # Build settings
 theme: minima
-#plugins:
-#  - jekyll-feed
+plugins:
+  - jekyll-feed
 
 # Exclude from processing.
 # The following items will not be processed, by default.
