@@ -178,17 +178,17 @@ PE: linker: Microsoft Linker(14.25)[EXE32,console]
 
 Looking at the file in "Resource Hacker". There is a RT_RCDATA resource with ID 101. The .rsrc is kind of big, 86 KB to be exact and seems to contains random bytes, which may indicate it's packed or encrypted/obfuscated.
 
-![Resource Hacker](2020/07/17/images/resource_hacker.png)
+![Resource Hacker](resource_hacker.png)
 
 The .rsrc section also has quite a high entry, as shown by the diagram in DiE.
 
-![Detect It Easy](2020/07/17images/entropy_rsrc.png)
+![Detect It Easy](entropy_rsrc.png)
 
 Let's do some analysis of the suspicous binary in Cutter. What immediatly peaks my interest is what looks like a lookup table in the Strings pane in Cutter. "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890./="
 
 Looking a xrefs to the strings we come to this
 
-![Cutter Xrefs string decryption](2020/07/17/images/calls_to_decrypt.png)
+![Cutter Xrefs string decryption](calls_to_decrypt.png)
 
 The decompiled the function looks like this in Cutter:
 
@@ -451,7 +451,7 @@ EDI = .rsrc section at address 00416060 + C
     
 We can validate this by starting up HxD to check the key and the data after it
     
-![HxD](2020/07/17/images/resource_size.png)
+![HxD](resource_size.png)
 
 Our RC4 key is at offset C (12 bytes in)
 
@@ -461,7 +461,7 @@ We still wanna know what the additional functionality does, since we can see in 
 
 If the let the decryption routine finish on the newly allocted memory region we can see a decrypted MZ binary. 
 
-![decrypted_rsrc](2020/07/17/images/decrypted_rsrc.png)
+![decrypted_rsrc](decrypted_rsrc.png)
 
 After the .rsrc has been decrypted, it goes back to resoöving some more encrypted API calls. The calls are the following:
 ```
@@ -477,7 +477,7 @@ After the .rsrc has been decrypted, it goes back to resoöving some more encrypt
 
 It then calls this API to spawn a suspended copy of itself. This is starting to look like it will write the unpacked payload to a new child process.
 
-![Spawn_child](2020/07/17/images/spawned_child.png)
+![Spawn_child](spawned_child.png)
 
 **Cruloaders second layer**
 
@@ -761,7 +761,7 @@ cp PNG-02-Copy.png /var/lib/inetsim/http/fakefiles/sample.png
 I was also a bit cheeky and changed the pastebin URL in the sample to
 http://pastebin.com/index.html 
 
-![Sneaky sneaky](2020/07/17/images/sneaky_change_url.png)
+![Sneaky sneaky](sneaky_change_url.png)
 
 The next string output.jpg is encrypted with
 ```
@@ -794,7 +794,7 @@ After that strings is deobfuscated it checks for the string "IHDR" in the memory
 
 If we look at the data after the string "redaolurc" it seems to indicate that it's been XORED with 0x61 (the char "a")
 
-![redaolurc](2020/07/17/images/redaolurc_EOF.png)
+![redaolurc](redaolurc_EOF.png)
 
 De-XORing the .png file with 0x61 reveals that it's a Windows binary and that the string "redaolurc" was used as a marker,
 for the malware to know the offset to the encrypted payload in the .PNG file.
@@ -807,10 +807,10 @@ The final payload contains an interesting string in form of PDB path, which we c
 "C":\Users\User\source\repos\Cruloader_Payload\Release\Cruloader_Payload.pdb"
 
 Functionality for the final payload is to display a Messagebox
-![Final_payload](2020/07/17/images/final_payload_function.png)
+![Final_payload](final_payload_function.png)
 
 **To automate parts of the extraction of the first packed layer and download of the .png payload I have created the following Python script:**
 (Note that I am quite the beginner at Python coding, so the code may not be the best)
 
-[CruLoader_Unpacker_Downloader](2020/07/17/code/cruloader_unpacker_downloader.py)
+[CruLoader_Unpacker_Downloader](cruloader_unpacker_downloader.py)
 
