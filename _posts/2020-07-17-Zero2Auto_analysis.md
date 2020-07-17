@@ -813,5 +813,3 @@ Functionality for the final payload is to display a Messagebox
 (Note that I am quite the beginner at Python coding, so the code may not be the best)
 
 [CruLoader_Unpacker_Downloader](/assets/code/cruloader_unpacker_downloader.py)
-
-![Test](/assets/calls_to_decrypt.png)
