@@ -443,9 +443,9 @@ EDI = size of encrypted data in hex
 edi=00015400 (87040 bytes)
 
 If we look at this instruction in x32dbg we can see the RC4 key.
-
+```
 00401592 | 0FB64438 0C              | movzx eax,byte ptr ds:[eax+edi+C]       | eax+edi*1+C:"kkd5YdPM24VBXmi"
-
+```
 EAX = 0 (start of our rsrc section)
 EDI = .rsrc section at address 00416060 + C
     
