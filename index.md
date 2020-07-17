@@ -1,6 +1,3 @@
-layout: home
-title: "Stick + Poke = Analyze malware"
-permalink: /about/
 <ul>
   {% for post in site.posts %}
     <li>
