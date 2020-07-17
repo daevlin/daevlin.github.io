@@ -1,9 +1,9 @@
 title: Malware, meet Mr Poke and Mr Stick
 author:
-  name: daevlin
+  name: 
 #  email: your-email@domain.com
 description: > # this means to ignore newlines until "show_excerpts:"
-  I have a weird hobby
+  .I have a weird hobby.
   
   
 
@@ -17,7 +17,7 @@ minima:
   # generate social links in footer
   social_links:
     twitter: daevlin
-#    github:  jekyll
+    github:  daevlin
     # devto: jekyll
     # dribbble: jekyll
     # facebook: jekyll
