@@ -1,5 +1,5 @@
 ---
-permalink: /code:/images
+permalink: /about/
 layout: home
 ---
 <ul>
