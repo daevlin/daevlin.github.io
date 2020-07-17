@@ -1,5 +1,8 @@
-# Zero2Auto custom sample analysis
+---
+layout: post
+---
 
+# Zero2Auto custom sample analysis
 
 ```
 Short summary report for the IR Team
