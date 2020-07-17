@@ -1,9 +1,10 @@
 
-
+name: daevlin
 title: Malware, meet Mr Stick and Mr Poke
 #email: your-email@example.com
-description: >- # this means to ignore newlines until "baseurl:"
-  
+description: Hobby malware analyst. We can call it jobbie.
+avatar: https://github.com/daevlin/daevlin.github.io/blob/master/daevlin.png
+permalink: /images:/code:/
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: daevlin
@@ -13,6 +14,7 @@ twitter_username: daevlin
 theme: minima
 plugins:
   - jekyll-feed
+  - jekyll-sitemap
 
 # Exclude from processing.
 # The following items will not be processed, by default.
@@ -23,11 +25,11 @@ plugins:
 # their entries' file path in the `include:` list.
 #
 # exclude:
-#   - .sass-cache/
-#   - .jekyll-cache/
+# - .sass-cache/
+#  - .jekyll-cache/
 #   - gemfiles/
-#   - Gemfile
-#   - Gemfile.lock
+   - Gemfile
+   - Gemfile.lock
 #   - node_modules/
 #   - vendor/bundle/
 #   - vendor/cache/
