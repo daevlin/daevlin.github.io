@@ -1,6 +1,5 @@
 ---
 layout: post
-permalink: /images/
 title: Zero2Auto custom sample analysis
 ---
 
