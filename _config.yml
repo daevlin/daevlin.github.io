@@ -1,6 +1,6 @@
 title: Malware, meet Mr Poke and Mr Stick
 author:
-  name: 
+  name: daevlin
 #  email: your-email@domain.com
 description: > # this means to ignore newlines until "show_excerpts:"
   .I have a weird hobby.
@@ -56,6 +56,9 @@ minima:
 theme: minima
 #skin: dark
 show_excerpts: true
+
+header_pages:
+  - about.md
 
 plugins:
  - jekyll-feed
