@@ -59,8 +59,8 @@ minima:
 
 show_excerpts: true
 
-header_pages:
-  - about.md
+#header_pages:
+#  - about.md
 
 plugins:
  - jekyll-feed
