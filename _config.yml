@@ -3,7 +3,7 @@ author:
   name:
 #  email: your-email@domain.com
 description: > # this means to ignore newlines until "show_excerpts:"
-  I sure picked a weird hobby
+  I sure picked a weird hobby, malware analysis
 
 # Minima date format
 # refer to https://shopify.github.io/liquid/filters/date/ if you want to customize this
