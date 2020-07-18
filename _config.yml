@@ -52,7 +52,7 @@ minima:
 theme: minima
 #minima:
 #  skin: classic
-
+logo: logo.png
 show_excerpts: true
 
 #header_pages:
