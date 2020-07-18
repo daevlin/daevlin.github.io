@@ -55,7 +55,7 @@ minima:
 # Build settings
 theme: minima
 minima:
-  skin: solarized-dark
+  skin: classic
 
 show_excerpts: true
 
