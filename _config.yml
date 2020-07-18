@@ -54,8 +54,8 @@ minima:
 
 # Build settings
 theme: minima
-minima:
-  skin: classic
+#minima:
+#  skin: classic
 
 show_excerpts: true
 
