@@ -9,11 +9,11 @@ A detailed report about the custom sample from the online "Zero2Auto" course, wi
 Short summary report for the IR Team
 
 The suspicous sample the IR team found on an infected machine has the following functionality:
-Spawns and injects itself into svhost.exe process to try and hide it's presence on the system
-Acts like a downloader for additional malicous code
-Uses legitimate webservices like Pastebin to get the next download stage to stay under the radar
-Hides additional downloaded payloads in .PNG files, possibly to bypass FW/EDR/AV solutions
-The final stage of the malicous code indicates the infected client has been "Uh Oh Hacked"
+Spawns and injects itself into svhost.exe processes to try and hide it's presence on the system.
+Acts like a downloader for additional malicous code.
+Uses legitimate webservices like Pastebin to get the next download stage to stay under the radar.
+Hides additional downloaded payloads in .PNG files, possibly to bypass FW/EDR/AV solutions.
+The final stage of the malicous code indicates the infected client has been "Uh Oh Hacked".
 I've attached the following Yara rule to this email,
 that can help the IR team to find client(s) infected with this malware.
 
@@ -50,11 +50,11 @@ Browser User-Agent: cruloader
 
 ### Detailed analysis of the custom sample from the chapter "Practical Analysis and Test
 
-Tools used. "rabin2, rahex2, Resource Hacker, DiE, Cutter, x32dbg, Python, Inetsim, PE-Bear"
+Tools used: "rabin2, rahex2, Resource Hacker, DiE, Cutter, x32dbg, Python, Inetsim, PE-Bear"
 
-We start by getting a hash of the file
+We start by getting a hash of the file.
 
-1) Sample SHA256: 
+Sample SHA256: 
 a0ac02a1e6c908b90173e86c3e321f2bab082ed45236503a21eb7d984de10611  main_bin.exe
 
 File seems to be compiled Sun Jun 21 16:12:38 2020. Seems to be no indication of time stomping.
@@ -73,7 +73,7 @@ Detections:
 
 	Permanent Link : https://www.virustotal.com/gui/file/a0ac02a1e6c908b90173e86c3e321f2bab082ed45236503a21eb7d984de10611/detection/f-a0ac02a1e6c908b90173e86c3e321f2bab082ed45236503a21eb7d984de10611-1592748951
 
-Which is a indicator that the sample might be malicous
+Which is a indicator that the sample might be malicous.
 
 Looking at the imports with rabin2 -i main_bin.exe we can see that the sample import the following API calls:
 
@@ -162,7 +162,7 @@ idx=03 addr=0x00012e00 off=0x00012e00 sz=87552 vsz=87168 perm=-r-- name=.rsrc
 idx=04 addr=0x00028400 off=0x00028400 sz=4096 vsz=3768 perm=-r-- name=.reloc
 
 ```
-What sticks out in this case is that the .rsrc section is quite big, but there are no calls to any API calls to access it, for example:
+What sticks out in this case is that the .rsrc section is quite big, but there are no calls to any API functions to access it, for example:
 
 ```
 SizeofResource
@@ -178,7 +178,7 @@ diec main_bin.exe
 PE: compiler: Microsoft Visual C/C++(-)[-]
 PE: linker: Microsoft Linker(14.25)[EXE32,console]
 
-Looking at the file in "Resource Hacker". There is a RT_RCDATA resource with ID 101. The .rsrc is kind of big, 86 KB to be exact and seems to contains random bytes, which may indicate it's packed or encrypted/obfuscated.
+Looking at the file in "Resource Hacker". There is a RT_RCDATA resource with ID "101". The .rsrc is kind of big, 86 KB to be exact and seems to contains random bytes, which may indicate it's packed or encrypted/obfuscated.
 
 ![Resource Hacker](/assets/images/resource_hacker.png)
 
@@ -188,7 +188,7 @@ The .rsrc section also has quite a high entry, as shown by the diagram in DiE.
 
 Let's do some analysis of the suspicous binary in Cutter. What immediatly peaks my interest is what looks like a lookup table in the Strings pane in Cutter. "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890./="
 
-Looking a xrefs to the strings we come to this
+Looking a xrefs to the string we come to this
 
 ![Cutter Xrefs string decryption](/assets/images/calls_to_decrypt.png)
 
@@ -349,15 +349,11 @@ void __fastcall fcn.00401000(int32_t param_1)
     return;
     }
 ```
-
-
-Looking at this iVar6 = iVar3 + 0xd; (0xd = 13) I have a sneaking suspicion that it is using ROT13 encoding.
+Looking at this decompiled line of code "iVar6 = iVar3 + 0xd; (0xd = 13)", I have a sneaking suspicion that it is using ROT13 encoding.
 But lets fire up x32dbg and put a BP 00401300, to further analyse it and verify this theory.
 
-Our encrypted strings
-
+Our encrypted strings:
 ```
-
 00000000  F5gG8e514pbag5kg
 00000014  .5ea5/QPY4//
 00000024  pe51g5Ceb35ffn
@@ -373,28 +369,27 @@ Our encrypted strings
 000000D0  I9egh1/n//b3
 000000E0  yb3.E5fbhe35
 000000F0  yb14E5fbhe35
-
 ```
 
-Our first encrypted strings
+Let's look at the first encrypted string:
 
 ```
-
 .5ea5/QPY4//
 
 ```
 
 Imma gonna need a quantum computer to crack this!
 
-If we take the . and rotate 13 chars according to the lookup table (abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890./=) we end up on k. If we take the second char "5" and rotate 13, we get e, then e becomes r and so on and so forth.
+If we take the character "." and rotate it 13 characters according to the lookup table (abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890./=) we end up on "k". If we take the second char "5" and rotate 13, we get "e", then "e" becomes "r" and so on and so forth.
 
+So to summarize:
 ```
 
 .5ea5/QPY4// becomes kernel32.dll
 
 ```
 
-After the API calls to get the RC4 enrypted .rsrc section are deobfuscated it will call the following API calls:
+After the API calls to get the RC4 enrypted .rsrc section are deobfuscated it will call the following API functions:
 
 ```
 SizeofResource
@@ -408,7 +403,7 @@ LoadResource
 If we set BP on LockResource, and let it hit (and return to user code), the address of the resource that it wans to read should be in the EAX register.
 It will then call VirtualAlloc to assign a memory region for the resource.
 
-After the memory area is allocated, we come across sometthing that looks a lot like RC4 encryption (hint cmp eax, 100).
+After the memory region is allocated, we come across something that looks a lot like RC4 encryption (hint cmp eax, 100):
 
 ```c
     iVar12 = 0;
@@ -444,18 +439,18 @@ After the memory area is allocated, we come across sometthing that looks a lot l
 EDI = size of encrypted data in hex 
 edi=00015400 (87040 bytes)
 
-If we look at this instruction in x32dbg we can see the RC4 key.
+If we look at this instruction in x32dbg we can see the RC4 key that will be used for decryption:
 ```
 00401592 | 0FB64438 0C              | movzx eax,byte ptr ds:[eax+edi+C]       | eax+edi*1+C:"kkd5YdPM24VBXmi"
 ```
 EAX = 0 (start of our rsrc section)
 EDI = .rsrc section at address 00416060 + C
     
-We can validate this by starting up HxD to check the key and the data after it
+We can validate this by starting up HxD to check for the key and the data after it.
     
 ![HxD](/assets/images/resource_size.png)
 
-Our RC4 key is at offset C (12 bytes in)
+Our RC4 key is at offset C (12 bytes in).
 
 With that knowledge, we should at least be able to make a Python script to unpack the first Stage of CruLoader. But why settle for that?
 
@@ -483,7 +478,7 @@ It then calls this API to spawn a suspended copy of itself. This is starting to 
 
 **Cruloaders second layer**
 
-So. With that, let's look at the unpacked/decrypted payload we dumped out earlier to see what this second stage does.
+So! With that let's move onto the next stage and look at the unpacked/decrypted payload we dumped out earlier to see what this second stage does.
 
 Imports of our unpacked payload does not look that suspicous
 
@@ -564,7 +559,7 @@ Num  Vaddr       Bind      Type Name
   70 0x0040f114    NONE    FUNC KERNEL32.dll_DecodePointer
 ```
 
-What about the sections? Nope
+What about the sections? Nope.
 
 rabin2.exe -S unpacked_cruloader.exe
 ```
@@ -586,7 +581,7 @@ Looking at the strings in the binary, shows something intersting though, a strin
 ```
 
 Taking a quick look at it Cutter shows something suspicous. My favorite party trick, is to search for all XOR instructions.
-One of them sticks out a bit (there a more, but we will get to those later)
+One of them sticks out a bit (there a more, but we will get to those later).
 ```
 xor ecx, 0xedb88320
 xor edx, 0xedb88320
@@ -693,10 +688,10 @@ WTH? Sure enough, the process exited after it had gone through all the running p
 It looks like it uses the CRC32 function we saw before against any running processes.
 
 Killing ProcessHacker seems to do the trick. It also seems to check for Wireshark and possibly some other running process.
-Now that the bp for CreateProcessInternalW gets hit and a suspended svchost.exe process gets created:
-
+Now that the bp for CreateProcessInternalW gets hit and a suspended svchost.exe process gets created.
+```
 dword ptr ebp+C=0018F9F4 &"C:\\Windows\\System32\\svchost.exe"=0018FAA0 "C:\\Windows\\System32\\svchost.exe"
-
+```
 After the BP is hit, we can start up ProcessHacker once again.
 
 Why did it inject into svchost.exe? There was no strings visible with that in the second stage binary.
@@ -730,15 +725,15 @@ HttpQueryInfoA
 
 Hmmm. API calls to internet connectivity, but we don't see any URL/hostname in the binary. Where is it hiding?
 
-If we set a BP on InternetOpenUrlA we can see that URL "https://pastebin.com/raw/mLem9DGk"
+If we set a BP on InternetOpenUrlA we can see the URL "https://pastebin.com/raw/mLem9DGk".
 
-The URL is obfuscated with:
+The URL was obfuscated with:
 ```
 rol dl,4  
 xor dl,C5
 ```
 
-We can verify this by dragging the unpacked CruLoader binary into Cyberchef and use this recipe:
+We can verify this by dragging the second stage unpacked CruLoader binary into Cyberchef and use this recipe:
 ```
 Encoded URL in hex: DA 1B 1B 5B 6B FF AE AE 5B 4A 6B 1B 0A 7A CA BA BE 6A AA 8A AE 7B 4A 2B AE 8A 98 0A 8A CF 18 28 EA
 
@@ -747,7 +742,7 @@ XOR({'option':'Hex','string':'C5'},'Standard',false)
 Extract_URLs(false)
 ```
 
-On that page is the following data
+On the Pastebin page is the following data:
 https://i.ibb.co/KsfqHym/PNG-02-Copy.png
 
 If we download that file, it is indeed a .png file that renders correctly when opened.
@@ -758,19 +753,20 @@ For this to work, since it's calling /raw in pastebin we may have to remove all 
 http://i.ibb.co/KsfqHym/PNG-02-Copy.png. Reason being, is that InetSim is kinda bad at faking SSL certs. :)
 
 The file PNG-02-Copy.png is copied into the InetSim folder, in my case:
+```
 cp PNG-02-Copy.png /var/lib/inetsim/http/fakefiles/sample.png
-
-I was also a bit cheeky and changed the pastebin URL in the sample to
+```
+I was also a bit cheeky and changed the pastebin URL in the sample to.
 http://pastebin.com/index.html 
 
 ![Sneaky sneaky](/assets/images/sneaky_change_url.png)
 
-The next string output.jpg is encrypted with
+The next string output.jpg is obfuscated with
 ```
 rol cl,4  
 xor cl,1F
 ```
-Which is the filename, of the payload (the PNG file) that will be written to disk
+Which is the filename, of the payload (the PNG file) that will be written to disk.
 
 Once the .png file is downloaded it will once again call the CRC32 API hashing function and resolve:
 
@@ -786,7 +782,7 @@ It will use these API calls to create a directory in %TEMP%\\cruloader" with the
 That it downloaded a .png file is not suspicius at all, right? Are not .png files just pictures? Well, this gets even more interesting.
 If we continue running the code, the string "redaolurc" shows up. What is it used for?
 
-The string "redaolurc" is encrypted with:
+The string "redaolurc" is obfuscated with:
 ```
 rol cl,4
 xor cl,9A
@@ -794,7 +790,7 @@ xor cl,9A
 
 After that strings is deobfuscated it checks for the string "IHDR" in the memory region allocated for the downloaded .PNG file and the string "redaolurc"
 
-If we look at the data after the string "redaolurc" it seems to indicate that it's been XORED with 0x61 (the char "a")
+If we look at the data after the string "redaolurc" it seems to indicate that it contains data that has been XORed with 0x61 (the char "a")
 
 ![redaolurc](/assets/images/redaolurc_EOF.png)
 
@@ -806,9 +802,10 @@ We can trim the file by removing everything before the MZ header and then resize
 Continuing exectution, it spawns a new svchost.exe process in which it injects the payload from the decrypted .png file.
 
 The final payload contains an interesting string in form of PDB path, which we could build a YARA rule for.
+```
 "C":\Users\User\source\repos\Cruloader_Payload\Release\Cruloader_Payload.pdb"
-
-Functionality for the final payload is to display a Messagebox
+```
+Functionality for the final payload is to display a Messagebox.
 ![Final_payload](/assets/images/final_payload_function.png)
 
 **To automate parts of the extraction of the first packed layer and download of the .png payload I have created the following Python script:**
