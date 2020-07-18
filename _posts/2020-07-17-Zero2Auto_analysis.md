@@ -3,6 +3,8 @@ layout: post
 title: Zero2Auto custom sample analysis
 ---
 
+A detailed report about the custom sample from the online "Zero2Auto" course, with my solution to automating the unpacking of the first stage of the malware, extracting the configuration from it, and then downloading the final paylod. Then lastly decrypt the final payload.
+
 ```
 Short summary report for the IR Team
 
