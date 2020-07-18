@@ -55,7 +55,7 @@ minima:
 # Build settings
 theme: minima
 #skin: dark
-            
+show_excerpts: true
 
 plugins:
  - jekyll-feed
