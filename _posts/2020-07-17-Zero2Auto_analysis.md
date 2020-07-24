@@ -70,7 +70,7 @@ Detections:
 
 This may be is a indicator that the sample might be malicous.
 
-Looking at the imports with the command "rabin2 -i main_bin.exe" we can see that the sample import the following API calls:
+Looking at the imports with the command "rabin2 -i main_bin.exe" we can see that the sample imports the following API functions:
 
 ```
 [Imports]
@@ -158,27 +158,27 @@ FindResourceA
 LockResource
 LoadResource 
 ```
-DiE does not indicate that the sample is packed with a known packer. But hiding API calls and the big .rsrc section makes me have a theory that it is. I just have to prove it somehow.
+The program DiE does not indicate that the sample is packed with a known packer. But hiding API calls and the big .rsrc section makes me have a theory that it is. I just have to prove it somehow.
 ```
 diec main_bin.exe 
 PE: compiler: Microsoft Visual C/C++(-)[-]
 PE: linker: Microsoft Linker(14.25)[EXE32,console]
 ```
-Looking at the file in "Resource Hacker". There is a RT_RCDATA resource with ID "101". The .rsrc is kind of big, 86 KB to be exact and seems to contains random bytes, which may indicate it's packed or encrypted/obfuscated.
+Looking at the file in "Resource Hacker". There is a "RT_RCDATA" resource with ID "101". The .rsrc is kind of big, 86 KB to be exact and seems to contains random bytes, which may indicate it's packed or encrypted/obfuscated.
 
 ![Resource Hacker](/assets/images/resource_hacker.png)
 
-The .rsrc section also has quite a high entry, as shown by the diagram in DiE.
+The .rsrc section also has quite a high entry, as shown by the diagram in DiE. The high entropy strenghtens our theory about it being packed or encrypted/obfuscated.
 
 ![Detect It Easy](/assets/images/entropy_rsrc.png)
 
-Let's do some analysis of the suspicous binary in Cutter. What immediatly peaks my interest is what looks like a lookup table in the Strings pane in Cutter. "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890./="
+Let's do some analysis of the suspicous binary in Cutter. What immediatly peaks my interest, is what looks like a lookup table in the Strings pane in Cutter. "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890./="
 
-Looking a xrefs to the string we come to this
+Looking a xrefs to the string we come to this function:
 
 ![Cutter Xrefs string decryption](/assets/images/calls_to_decrypt.png)
 
-The decompiled the function looks like this in Cutter:
+The decompiled function looks like this as pseudo code in Cutter.
 ```c
 void __fastcall fcn.00401300(char *param_1)
 {
@@ -356,7 +356,7 @@ Our encrypted strings:
 000000F0  yb14E5fbhe35
 ```
 
-Let's look at the first encrypted string:
+Let's take a look at the first encrypted string:
 ```
 .5ea5/QPY4//
 ```
@@ -368,7 +368,7 @@ So to summarize:
 ```
 .5ea5/QPY4// becomes kernel32.dll
 ```
-After the API calls to get the RC4 enrypted .rsrc section are deobfuscated it will call the following API functions:
+After the strings to get the RC4 enrypted .rsrc section are deobfuscated it will call the following API functions:
 ```
 SizeofResource
 FindResourceA
@@ -378,7 +378,7 @@ LoadResource
 ```
 If we set BP on LockResource, and let it hit (and then return to user code), the address of the resource that it wants to access should be in the EAX register.
 It will then call VirtualAlloc to assign a memory region for the encrypted resource.
-After the memory region is allocated, we come across something that looks a lot like RC4 encryption (hint cmp eax, 100h):
+After the memory region is allocated and the .rsrc section data is copied to it, we come across something that looks a lot like RC4 encryption (hint cmp eax, 100h):
 ```c
     iVar12 = 0;
     do {
@@ -425,9 +425,9 @@ Our RC4 key is at offset C (12 bytes in).
 
 With that knowledge, we should at least be able to make a Python script to unpack the first Stage of CruLoader. But why settle for that?
 
-We still want to know what the additional functionality does, since we can see in the decompiled code that there are a few other encrypted strings which have not been decrypted yet.
+We still want to know what the additional functionality in this sample does, since we can see in the decompiled code that there are a few other encrypted strings which have not been decrypted yet.
 
-If the let the decryption routine finish on the newly allocted memory region we can see a decrypted MZ binary, so our assumption was correct.
+If the let the decryption routine finish on the newly allocted memory region we can see a decrypted MZ binary, so our theory was correct.
 
 ![decrypted_rsrc](/assets/images/decrypted_rsrc.png)
 
@@ -539,7 +539,7 @@ Nm Paddr       Size Vaddr      Memsz Perms Name
 ```
 
 DiE is not showing high entropy for any of the sections.
-Looking at the strings in the binary, shows something intersting though, a string "cruloader" and a .dll for which there are no API imports. Does it perhaps contain network functionality since there is a reference to wininet.dll? But where is the hostname/URL?
+Looking at the strings in the binary shows something intersting though, a string "cruloader" and a .dll for which there are no API imports. Does it perhaps contain network functionality since there is a reference to wininet.dll? But where is the hostname/URL?
 ```
 1062 0x00012a1c 0x00413c1c  12  13 (.rdata) ascii kernel32.dll
 1063 0x00012a2c 0x00413c2c   9  10 (.rdata) ascii ntdll.dll
@@ -618,7 +618,7 @@ uint32_t __cdecl fcn.00401660(int32_t arg_8h)
     return ~uVar4;
 }
 ```
-Let's validate this somehow by firing up x32dbg and correlate this with the tool rahash2.
+Let's validate this somehow by firing up x32dbg and correlate this with the tool "rahash2".
 ```
 x32dbg hash found:
 
@@ -648,8 +648,8 @@ rahash2.exe -a crc32 -s "Process32NextW"
 ```
 Whelps! What will it do with these API calls? Find a process to inject into? Be mean to us analysts and mess with us if a "forbidden" process is found?
 WTH? Sure enough, the process exited after it had gone through all the running processes. That's just evil. So how do we find out which process it is looking for?
-It looks like it uses the CRC32 function we saw before against any running processes.
-Killing ProcessHacker seems to do the trick. It also seems to check for Wireshark and possibly some other running process.
+It looks like it uses the CRC32 function we saw before against any running processes. If any of those matches, then the sample calls the API function "ExitProcess". In my case I was running "Processhacker" on the system, which got detected by this function.
+The malware sample also seems to check for Wireshark and possibly some other running processes.
 Now that I have stopped ProcessHacker and restarted the debugging of the second stage, the breakpoint for CreateProcessInternalW gets hit when we run it once again and a suspended svchost.exe process gets created.
 ```
 dword ptr ebp+C=0018F9F4 &"C:\\Windows\\System32\\svchost.exe"=0018FAA0 "C:\\Windows\\System32\\svchost.exe"
@@ -665,13 +665,13 @@ The string (hex)
 ```
 1E 89 EF 5F BC CC 6C DC 5D 1D EF 1F BD 1D 6D 7C FC 19 09 EF 1D 4D 1C AC DC 1D 6D C8 7C AD 7C 00 86 12 40
 ```
-Becomes
+Becomes:
 C:\Windows\System32\svchost.exe
 This explains why it got injected into "svchost.exe"
 
-If we continue execution, it calls the API function "RemoteThread", to create a thread in the suspended svchost.exe process at address 00101DC0 in my case, where it will continue execution in the spawned child process
+If we continue execution, it calls the API function "RemoteThread", to create a thread in the suspended svchost.exe process at address 00101DC0 in my case, where it will continue execution in the spawned child process.
 
-In the spawned svchost.exe process it once again uses CRC32 hashing to resolve API calls from wininet.dll
+In the spawned svchost.exe process it once again uses CRC32 hashing to resolve API calls from wininet.dll.
 ```
 InternetOpenA
 InternetOpenUrlA
@@ -710,10 +710,10 @@ malduck.xor(0xc5, rol4)
 
 ```
 
-On the Pastebin page is the following data:
+On the Pastebin page is the following URL that gets parsed by the malware sample:
 https://i.ibb.co/KsfqHym/PNG-02-Copy.png
 
-If we download that file, it is indeed a .png file that renders correctly when opened.
+If we download the file from that URL, it is indeed a .png file that renders correctly when opened.
 
 Let's be sneaky and grab the .png file. We will then fire up Inetsim and let CruLoader grab the URL https://i.ibb.co/KsfqHym/PNG-02-Copy.png from the first link, https://pastebin.com/raw/mLem9DGk", which will be hosted on our InetSim service which is acting as a webserver and a DNS. Hopefully makes it a bit easier to see if anything "fun" happens with that .png file.
 For this to work, since it's calling /raw in pastebin we may have to remove all html tags from Inetsims sample.html and also change the URL to 
@@ -727,7 +727,7 @@ The file PNG-02-Copy.png is copied into the InetSim folder:
 cp PNG-02-Copy.png /var/lib/inetsim/http/fakefiles/sample.png
 ```
 
-The next string output.jpg is obfuscated with
+The next string "output.jpg", that the malware sample will use is obfuscated with:
 ```
 rol cl,4  
 xor cl,1F
@@ -749,11 +749,11 @@ rol cl,4
 xor cl,9A
 ```
 After that strings is deobfuscated it checks for the string "IHDR" in the memory region allocated for the downloaded .PNG file and the string "redaolurc"
-If we look at the data after the string "redaolurc" it seems to indicate that it contains data that has been XORed with 0x61 (the char "a")
+If we look at the data after the string "redaolurc" it seems to indicate that it contains data that has been XORed with hex "0x61" (the char "a")
 
 ![redaolurc](/assets/images/redaolurc_EOF.png)
 
-De-XORing the .png file with 0x61 reveals that it's a Windows binary and that the string "redaolurc" was used as a marker,
+De-XORing the .png file with hex "0x61" reveals that it's a Windows binary and that the string "redaolurc" was used as a marker,
 for the malware to know the offset to the encrypted payload in the .PNG file.
 We can trim the file by removing everything before the MZ header and then resize it with PE-Bear, so that we can analyze this final payload later.
 Continuing exectution, it spawns a new svchost.exe process in which it injects the payload from the decrypted .png file.
