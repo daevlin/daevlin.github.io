@@ -41,7 +41,7 @@ For example:
 ```
 bp VirtualAlloc;bpcnd VirtualAlloc,[esp+24]==PE;SetBreakpointFastResume VirtualAlloc, 1
 bp VirtualAlloc;bpcnd VirtualAlloc,[EDI]==PE;SetBreakpointFastResume VirtualAlloc, 1
-``
+```
 
 More tips here:
 https://help.x64dbg.com/en/latest/introduction/Expression-functions.html
