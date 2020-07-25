@@ -23,8 +23,9 @@ Example:
 savedata c:\dumpfolder\dump_test.bin,mem.base([esp+24]),mem.size([esp+24])
 ```
 You can also use the following option. Note that the file gets saved in the "memdump" folder where x32dbg/x64dbg is installed then:
+```
 savedata :memdump:,mem.decodepointer(esi),mem.size(esi)
-
+```
 Conditional breakpoint oneliner example set on a CPU register. These also work with stack pointers.
 Example:
 ```
