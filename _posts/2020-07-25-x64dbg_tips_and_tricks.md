@@ -43,5 +43,9 @@ bp VirtualAlloc;bpcnd VirtualAlloc,[esp+24]==PE;SetBreakpointFastResume VirtualA
 bp VirtualAlloc;bpcnd VirtualAlloc,[EDI]==PE;SetBreakpointFastResume VirtualAlloc, 1
 ```
 
+You can of course add these commands to "Favorites" in x64dbg, if you use them often or tend to forget a specific command (like I do)
+
+![x64dbg_favorites](/assets/images/favorites.png)
+
 More tips here:
 https://help.x64dbg.com/en/latest/introduction/Expression-functions.html
