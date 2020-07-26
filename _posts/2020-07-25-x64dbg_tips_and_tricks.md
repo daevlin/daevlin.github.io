@@ -1,6 +1,6 @@
 ---
 layout: post
-title: x64bg Tips and tricks
+title: x64bg Tips and Tricks
 ---
 
 Since I like to use the commandline a lot, I found the following useful in x64dbg. Some examples below.
@@ -17,13 +17,13 @@ If you want to dump from the base address of the memory region pointed to by the
 savedata c:\dumpfolder\dump_test.bin,mem.base(edi),mem.size(edi)
 ```
 
-Also works with stackpointers:
+Also works with stackpointers.
 
 ```
 savedata c:\dumpfolder\dump_test.bin,mem.base([esp+24]),mem.size([esp+24])
 ```
 
-You can also use the following option. Note that the file gets saved in the "memdump" folder where x32dbg/x64dbg is installed then:
+You can also use the following option. Note that the file gets saved in the "memdump" folder where x32dbg/x64dbg is installed then.
 
 ```
 savedata :memdump:,mem.decodepointer(esi),mem.size(esi)
