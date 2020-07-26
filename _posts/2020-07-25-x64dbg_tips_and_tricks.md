@@ -3,31 +3,34 @@ layout: post
 title: x64bg Tips and tricks
 ---
 
-Since I like to use the commandline a lot, I found the following useful in x64dbg.
+Since I like to use the commandline a lot, I found the following useful in x64dbg. Some examples below.
 
 Save the memory region from where the PTR in the CPU register points to.
 
-Example:
 ```
 savedata c:\dumpfolder\dump1.bin,mem.decodepointer(esi),mem.size(esi)
 ```
 
 If you want to dump from the base address of the memory region pointed to by the CPU register instead.
-Example:
+
 ```
 savedata c:\dumpfolder\dump_test.bin,mem.base(edi),mem.size(edi)
 ```
+
 Also works with stackpointers:
-Example:
+
 ```
 savedata c:\dumpfolder\dump_test.bin,mem.base([esp+24]),mem.size([esp+24])
 ```
+
 You can also use the following option. Note that the file gets saved in the "memdump" folder where x32dbg/x64dbg is installed then:
+
 ```
 savedata :memdump:,mem.decodepointer(esi),mem.size(esi)
 ```
+
 Conditional breakpoint oneliner example set on a CPU register. These also work with stack pointers.
-Example:
+
 ```
 bp VirtualAlloc;bpcnd VirtualAlloc,mem.valid('[cpu register] OR [stack pointer]');SetBreakpointFastResume VirtualAlloc, 1
 ```
@@ -40,7 +43,6 @@ There is also the condition "mem.iscode" which will break on a memory page that 
 
 You can also try CPU register or stack pointer == value.
 
-For example:
 ```
 bp VirtualAlloc;bpcnd VirtualAlloc,[esp+24]==PE;SetBreakpointFastResume VirtualAlloc, 1
 bp VirtualAlloc;bpcnd VirtualAlloc,[EDI]==PE;SetBreakpointFastResume VirtualAlloc, 1
