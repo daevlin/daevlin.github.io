@@ -3,7 +3,7 @@ layout: post
 title: x64bg Tips and Tricks
 ---
 
-Since I like to use the commandline a lot, I found the following useful in x64dbg. Some examples below.
+#### Since I like to use the commandline a lot, I found the following useful in x64dbg. Some examples below.
 
 Save the memory region from where the PTR in the CPU register points to.
 
@@ -29,7 +29,7 @@ You can also use the following option. Note that the file gets saved in the "mem
 savedata :memdump:,mem.decodepointer(esi),mem.size(esi)
 ```
 
-Conditional breakpoint oneliner example set on a CPU register. These also work with stack pointers.
+#### Conditional breakpoint oneliner example set on a CPU register. These also work with stack pointers.
 
 ```
 bp VirtualAlloc;bpcnd VirtualAlloc,mem.valid('[cpu register] OR [stack pointer]');SetBreakpointFastResume VirtualAlloc, 1
