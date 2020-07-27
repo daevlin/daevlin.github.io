@@ -47,6 +47,13 @@ You can also try CPU register or stack pointer == value.
 bp VirtualAlloc;bpcnd VirtualAlloc,[esp+24]==PE;SetBreakpointFastResume VirtualAlloc, 1
 bp VirtualAlloc;bpcnd VirtualAlloc,[EDI]==PE;SetBreakpointFastResume VirtualAlloc, 1
 ```
+If you want to set multiple conditions for a breakpoint, you can use "||" (OR)
+"&&" (AND).
+
+```
+bpcnd VirtualAlloc,mem.valid('[cpu register] OR [stack pointer]') || mem.iscode('[cpu register] OR [stack pointer]')
+bpcnd VirtualAlloc,mem.valid('[cpu register] OR [stack pointer]') && mem.iscode('[cpu register] OR [stack pointer]')
+```
 
 You can of course add these commands to "Favorites" in x64dbg, if you use them often or tend to forget a specific command (like I do)
 
