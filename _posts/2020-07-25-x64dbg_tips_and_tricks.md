@@ -44,8 +44,8 @@ There is also the condition "mem.iscode" which will break on a memory page that 
 You can also try CPU register or stack pointer == value.
 
 ```
-bp VirtualAlloc;bpcnd VirtualAlloc,[esp+24]==PE;SetBreakpointFastResume VirtualAlloc, 1
-bp VirtualAlloc;bpcnd VirtualAlloc,[EDI]==PE;SetBreakpointFastResume VirtualAlloc, 1
+bp VirtualAlloc;bpcnd VirtualAlloc,[esp+24]==X;SetBreakpointFastResume VirtualAlloc, 1
+bp VirtualAlloc;bpcnd VirtualAlloc,[EDI]==X;SetBreakpointFastResume VirtualAlloc, 1
 ```
 If you want to set multiple conditions for a breakpoint, you can use "||" (OR)
 "&&" (AND).
