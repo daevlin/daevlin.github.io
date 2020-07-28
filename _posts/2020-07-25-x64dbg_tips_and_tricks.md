@@ -65,8 +65,10 @@ bp FindResourceA;bpcnd FindResourceA,[ESP+8]==66;SetBreakpointFastResume FindRes
 
 OR
 
-```
+
 Break on a specific .rsrc type, in this case RT_RCDATA (MAKEINTRESOURCE(10)) (in hex)
+
+```
 bp FindResourceA;bpcnd FindResourceA,[ESP+C]==A;SetBreakpointFastResume FindResourceA, 1
 ```
 
