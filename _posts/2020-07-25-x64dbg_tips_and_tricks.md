@@ -56,6 +56,23 @@ bpcnd VirtualAlloc,[EDI]==X && [ESI]==Y
 
 ```
 
+Example use cases.
+Only break when a specific .rsrc ID (in hex) is called by FindResourceA.
+
+```
+bp FindResourceA;bpcnd FindResourceA,[ESP+8]==66;SetBreakpointFastResume FindResourceA, 1
+```
+
+OR
+
+```
+Break on a specific .rsrc type, in this case RT_RCDATA (MAKEINTRESOURCE(10)) 
+bp FindResourceA;bpcnd FindResourceA,[ESP+C]==10;SetBreakpointFastResume FindResourceA, 1
+```
+
+I bet you can find a lot of other useful use cases for conditional breakpoints.
+
+
 You can of course add these commands to "Favorites" in x64dbg, if you use them often or tend to forget a specific command (like I do)
 
 ![x64dbg_favorites](/assets/images/favorites.png)
