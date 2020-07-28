@@ -72,6 +72,8 @@ bp FindResourceA;bpcnd FindResourceA,[ESP+C]==A;SetBreakpointFastResume FindReso
 
 I bet you can find a lot of other useful use cases for conditional breakpoints.
 
+Sidenote, "PE-bear" is an awesome tool for dumping and finding .rsrc types.
+![PE-Bear](/assets/images/pe-bear.png)
 
 You can of course add these commands to "Favorites" in x64dbg, if you use them often or tend to forget a specific command (like I do)
 
