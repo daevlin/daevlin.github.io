@@ -9,7 +9,7 @@ title: x64bg Tips and Tricks
 Save data from a specific memory X address with Y size, instead of having to select the bytes in the dump window. 
 
 ```
-savedata c:\dumpfolder\dump.bin,001E2780,2000
+savedata c:\dumpfolder\dump.bin,001E2780,0x2000
 ```
 
 Save the memory region from where the PTR in the CPU register points to.
