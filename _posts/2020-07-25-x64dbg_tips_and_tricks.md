@@ -5,6 +5,7 @@ title: x64bg Tips and Tricks
 
 #### Since I like to use the commandline a lot, I found the following useful in x64dbg. Some examples below.
 
+
 Save data from a specific memory X address with Y size, instead of having to select the bytes in the dump window. 
 
 ```
