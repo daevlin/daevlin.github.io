@@ -68,7 +68,7 @@ Detections:
 
 	Permanent Link : https://www.virustotal.com/gui/file/a0ac02a1e6c908b90173e86c3e321f2bab082ed45236503a21eb7d984de10611/detection/f-a0ac02a1e6c908b90173e86c3e321f2bab082ed45236503a21eb7d984de10611-1592748951
 
-This may be is a indicator that the sample might be malicous.
+This may be a indicator that the sample is malicous.
 
 Looking at the imports with the command "rabin2 -i main_bin.exe" we can see that the sample imports the following API functions:
 
