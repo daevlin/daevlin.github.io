@@ -52,7 +52,7 @@ We start by getting a hash of the file.
 Sample SHA256: 
 a0ac02a1e6c908b90173e86c3e321f2bab082ed45236503a21eb7d984de10611  main_bin.exe
 
-File is compiled Sun Jun 21 16:12:38 2020. There seems to be no indication of time stomping of the file.
+The file is compiled Sun Jun 21 16:12:38 2020. There seems to be no indication of time stomping of the file.
 
 Looking at the hash on VT we can see that we get some hits when looking for the file hash:
 
@@ -168,7 +168,7 @@ Looking at the file in "Resource Hacker". There is a "RT_RCDATA" resource with I
 
 ![Resource Hacker](/assets/images/resource_hacker.png)
 
-The .rsrc section also has quite a high entry, as shown by the diagram in DiE. The high entropy strenghtens our theory about it being packed or encrypted/obfuscated.
+The .rsrc section also has quite a high entropy, as shown by the diagram in DiE. The high entropy strenghtens our theory about it being packed or encrypted/obfuscated.
 
 ![Detect It Easy](/assets/images/entropy_rsrc.png)
 
@@ -448,7 +448,7 @@ It then calls the API function "CreateProcessA" to spawn a suspended copy of its
 
 **Cruloaders second layer**
 
-So! With that let's move onto the next stage and look at the unpacked/decrypted payload I dumped out earlier, after it was decrypted, to see what this second stage does.
+So! With that knowledge, let's move onto the next stage and look at the unpacked/decrypted payload I dumped out earlier, after it was decrypted, to see what this second stage does.
 
 Imports of our unpacked payload does not look that suspicous.
 Output from the command "rabin2.exe -i unpacked_cruloader.exe":
